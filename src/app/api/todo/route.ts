@@ -54,6 +54,7 @@ export async function GET() {
             );
         }
   try {
+    console.log(userId)
     const todos = await prisma.todo.findMany({
         where: {
             userId: parseInt(userId),
