@@ -1,4 +1,5 @@
 
+
 import { loginService, registerService } from "../services/authService";
 export async function handleLogin(formData: FormData) {
   const email = formData.get("email") as string;
@@ -10,6 +11,11 @@ export async function handleLogin(formData: FormData) {
   }
   try {
     const user = await loginService(email, password);
+      // store user in local storage if not exist already on local storage
+      if(localStorage.getItem("user") === null){
+          localStorage.setItem("user", JSON.stringify(user.data));
+      }
+    
     return { success: true, user };
   } catch (error) {
     return { success: false, message: (error instanceof Error ? error.message : "An unknown error occurred") };
@@ -30,6 +36,10 @@ export async function handleRegister(formData: FormData) {
 
     try {
         const user = await registerService(name, email, password);
+        // store user in local storage if not exist already on local storage
+        if(localStorage.getItem("user") === null){
+            localStorage.setItem("user", JSON.stringify(user.data));
+        }
         return { success: true, user };
     } catch (error) {
         return { success: false, message: (error instanceof Error ? error.message : "An unknown error occurred") };

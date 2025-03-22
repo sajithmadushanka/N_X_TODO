@@ -1,7 +1,11 @@
 
 'use client';
 
-import {createContext, useContext, useState} from 'react';
+import {createContext, useContext,  useState} from 'react';
+
+
+// fetch all data if refresh the page
+
 
 // type Modal = {
 //     isOpen: boolean;
@@ -56,9 +60,13 @@ const StateContext = createContext({
     closeTodoModal: () => {},
     //--------------
     todos: [] as Todo[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setTodos: (todos: Todo[]) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     addTodo: (todo: Todo) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateTodo: (todo: Todo) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deleteTodo: (id: string) => {},
 });
 
@@ -93,6 +101,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
  };
 
     
+
     return (
         <StateContext.Provider value={{ isOpen, openModal, closeModal, user, setUser,
         isOpenTodoModal, openTodoModal, closeTodoModal,
@@ -110,3 +119,5 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 export const UserStateContext = () => {
     return useContext(StateContext);
 };
+
+

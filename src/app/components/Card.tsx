@@ -1,20 +1,22 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 
-import { getTodoService } from '../services/todoService';
+import { deleteTodoService, getTodoService } from '../services/todoService';
 import { UserStateContext } from '../context/ContextProvider';
+import TodoModal from './TodoModal';
+
+type Todo ={
+    id:string,
+    title:string,
+    description:string,
+    completed:string ,
+    createdAt:string ,
+    userId:string
+}
 const Card = () => {
-  const {user, todos} = UserStateContext();
+  const {user ,setTodos ,todos,deleteTodo , isOpenTodoModal,openTodoModal} = UserStateContext();
+  const [selectedTodo, setSelectedTodo] = React.useState<Todo | undefined>(undefined);
 
-  type todo ={
-    id:string;
-    title: string;
-    description: string;
-    completed:boolean;
-    userId:string;
-
-  }
-  const [_todos, setTodos] = useState<todo[]>([]);
 
   React.useEffect(() => {
     if (user?.userId !== "") { // Only fetch todos if user is available
@@ -25,12 +27,37 @@ const Card = () => {
         }
       });
     }
-  }, [user]); // ✅ Trigger refetch when user changes
+  }, [user]); 
+
+  const handleDeleteTodo = async (id: string) => {
+    console.log('delete todo', id)
+    try {
+      const res = await deleteTodoService(id);
+  
+      if (res.error) {
+        console.error("Delete failed:", res.error);
+        return;
+      }
+      deleteTodo(id);
+      console.log("Delete successful");
+      
+  
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+  }
+  // handle todo update-----------------
+   const handleTodoUpdate = (todo:Todo) => {
+    openTodoModal();
+    setSelectedTodo(todo);
+
+  };
+
 
   return (
     <div>
-      {_todos.map((todo) => (
-        <div key={todo.id} className="w-full flex justify-center py-6">
+      {todos.map((todo,index) => (
+        <div key={index} className="w-full flex justify-center py-6">
           <div className="w-[80%] bg-white shadow-lg rounded-2xl p-6 flex justify-between items-center border border-gray-200">
            {/* Left Side */}
             <div className="w-3/4 space-y-2">
@@ -41,13 +68,26 @@ const Card = () => {
           
           {/* Right Side - Buttons */}
         <div className="flex space-x-3">
-          <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all">Edit</button>
-          <button className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all">Delete</button>
+          <button 
+          onClick={()=>handleTodoUpdate(todo)}
+          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all">Edit</button>
+          <button
+          onClick={()=> handleDeleteTodo(todo.id)}
+           className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all">Delete</button>
         </div>
           </div>
           </div>
 
       ))}
+
+        {/* TodoModal for Update */}
+        {isOpenTodoModal && (
+        <TodoModal 
+          isUpdate={true}
+          initialData={selectedTodo} 
+     
+        />
+      )}
     </div>
   );
 };

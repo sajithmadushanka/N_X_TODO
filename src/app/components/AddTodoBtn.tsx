@@ -2,10 +2,15 @@
 import { UserStateContext } from "../context/ContextProvider"
 import TodoModal from "./TodoModal";
 const AddTodoBtn = () => {
-    const {isOpenTodoModal, openTodoModal} = UserStateContext();
+    const {isOpenTodoModal, openTodoModal, user} = UserStateContext();
 
 const todoModalHandler = () => {
-    openTodoModal();
+    if(user.userId === ""){
+        alert("Please login to add todo")
+        return;
+    }else{
+        openTodoModal();
+    }
   }
   return (
     <>
@@ -16,7 +21,7 @@ const todoModalHandler = () => {
       +
     </button>
     {isOpenTodoModal && (
-        <TodoModal/>
+        <TodoModal isUpdate={false} />
     )}
     </>
   )

@@ -6,13 +6,26 @@ import { UserStateContext } from '../context/ContextProvider';
 
 
 import { logoutService } from '../services/authService';
+import { useEffect } from 'react';
 const Header = () => {
-    const modal = UserStateContext();
+    const {user, setUser, isOpen, openModal} = UserStateContext();
+    
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedUser = localStorage.getItem("user");
+            console.log("storedUser", storedUser)
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        }
+    }, [setUser]); // Runs only once when the component mounts
+
 
   const handleLogout = async () => {
     const confirm = window.confirm("Are you sure you want to logout?");
     if(confirm){
-        modal.setUser({userId: "", email: "", name: ""});
+        setUser({userId: "", email: "", name: ""});
+        localStorage.removeItem("user");
     }
     // clear cookies userid
     try{
@@ -21,6 +34,7 @@ const Header = () => {
             console.log("error logout")
         }
         console.log("logout success", res.message)
+        window.location.reload();
     }catch(e){
         console.log(e)
     }
@@ -34,20 +48,23 @@ const Header = () => {
                 
                 {/* Navigation */}
                 <nav className="flex space-x-6">
-                    <h2  className="text-gray-700 hover:text-blue-500 transition-all">{modal.user.name}</h2>
-                    {modal.user.userId !== "" ? (
+                    
+                    {user.userId !== "" ? (
+                       <>
+                        <h2  className="text-gray-700 hover:text-blue-500 transition-all">{user?.name}</h2>
                         <button 
                             onClick={() =>handleLogout()}
                         className="text-red-600 hover:text-red-800 transition-all">Logout</button>
+                       </>
                     ) : (
                         <button 
-                        onClick={modal.openModal}
+                        onClick={openModal}
                         className="text-gray-700 hover:text-blue-500 transition-all">Login</button>
                     )}
                 </nav>
             </div>
             {/* Modal */}
-            {modal.isOpen && (
+            {isOpen && (
                 <ModelHandelBtn/>
             )}
 
