@@ -33,14 +33,15 @@ export async function POST(req: Request) {
         { message: "Login successful", data: rest },
         { status: 200 }
       );
-
+      // set cookies -----------------
       (await cookies()).set("userId", user.id.toString(), {
         path: "/",
         httpOnly: true,
         secure: true,
         sameSite: "strict",
       });
-
+      // cros origin  -----------------
+      
       return res;
     }
 
