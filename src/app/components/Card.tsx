@@ -3,7 +3,7 @@ import React from 'react'
 
 import { deleteTodoService, getTodoService } from '../services/todoService';
 import { UserStateContext } from '../context/ContextProvider';
-import TodoModal from './TodoModal';
+
 
 type Todo ={
     id:string,
@@ -13,9 +13,9 @@ type Todo ={
     createdAt:string ,
     userId:string
 }
-const Card = () => {
-  const {user ,setTodos ,todos,deleteTodo , isOpenTodoModal,openTodoModal} = UserStateContext();
-  const [selectedTodo, setSelectedTodo] = React.useState<Todo | undefined>(undefined);
+const Card = ({ onEditTodo }: { onEditTodo: (todo: Todo) => void }) => {
+  const {user ,setTodos ,todos,deleteTodo } = UserStateContext();
+  // const [selectedTodo, setSelectedTodo] = React.useState<Todo | undefined>(undefined);
 
 
   React.useEffect(() => {
@@ -46,13 +46,7 @@ const Card = () => {
       console.error("Error deleting todo:", error);
     }
   }
-  // handle todo update-----------------
-   const handleTodoUpdate = (todo:Todo) => {
-    openTodoModal();
-    setSelectedTodo(todo);
-
-  };
-
+ 
 
   return (
     <div>
@@ -69,7 +63,7 @@ const Card = () => {
           {/* Right Side - Buttons */}
         <div className="flex space-x-3">
           <button 
-          onClick={()=>handleTodoUpdate(todo)}
+          onClick={()=>onEditTodo(todo)}
           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-all">Edit</button>
           <button
           onClick={()=> handleDeleteTodo(todo.id)}
@@ -81,13 +75,13 @@ const Card = () => {
       ))}
 
         {/* TodoModal for Update */}
-        {isOpenTodoModal && (
+        {/* {isOpenTodoModal && (
         <TodoModal 
           isUpdate={true}
           initialData={selectedTodo} 
      
         />
-      )}
+      )} */}
     </div>
   );
 };

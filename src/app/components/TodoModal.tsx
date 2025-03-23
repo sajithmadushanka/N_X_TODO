@@ -1,19 +1,25 @@
 'use client'
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { UserStateContext } from "../context/ContextProvider"
 import { handleTodoCreate, handleTodoUpdate } from "../actions/todoActions";
 
 interface TodoData {
     id?: string;
-    userId: string;
+    userId?: string;
     title?: string;
     description?: string;
     completed?: string;
-    createdAt: string;
+    createdAt?: string;
 }
 
-const TodoModal = ({ initialData = {} as TodoData, isUpdate = false }) => {
+const TodoModal = ({ initialData = {} as TodoData, isUpdate }: { initialData?: TodoData; isUpdate: boolean }) => {
+    useEffect(() => {
+        console.log( isUpdate);
+    },[isUpdate]);
+
+
+
     const { closeTodoModal, addTodo,updateTodo } = UserStateContext();
 
     const [title, setTitle] = useState(initialData.title || "");
@@ -26,7 +32,9 @@ const TodoModal = ({ initialData = {} as TodoData, isUpdate = false }) => {
         startTransition(async () => {
             const response = isUpdate
                 ? initialData.id
-                    ? await handleTodoUpdate(initialData.id, initialData.userId, formData)
+                    ? initialData.id && initialData.userId
+                        ? await handleTodoUpdate(initialData.id, initialData.userId, formData)
+                        : { success: false, message: "Invalid ID or User ID" }
                     : { success: false, message: "Invalid ID" }
                 : await handleTodoCreate(formData);
 

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   const { email, password , name} = await req.json();
@@ -41,10 +42,18 @@ export async function POST(req: Request) {
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...rest } = newUser;
-    return NextResponse.json(
+    const res = NextResponse.json(
       { message: "User created successfully", data: rest },
       { status: 201 }
     );
+    // set cookies -----------------
+     (await cookies()).set("userId", newUser.id.toString(), {
+            path: "/",
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+          });
+          return res
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return NextResponse.json(

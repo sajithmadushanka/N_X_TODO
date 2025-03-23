@@ -18,6 +18,7 @@ export async function loginService(email:string, password:string){
 
 // register api call
 export async function registerService(name:string, email:string, password:string){
+  
     const response = await fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
         headers: {
@@ -25,6 +26,9 @@ export async function registerService(name:string, email:string, password:string
         },
         body: JSON.stringify({ name, email, password }),
         });
+        if (!response.ok) {
+            throw new Error("Registration failed! please try again");
+          }
         return response.json();
 }
 

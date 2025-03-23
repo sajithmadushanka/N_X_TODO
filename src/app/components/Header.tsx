@@ -13,12 +13,18 @@ const Header = () => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const storedUser = localStorage.getItem("user");
-            console.log("storedUser", storedUser)
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
+            console.log("storedUser", storedUser);
+    
+            if (storedUser && storedUser !== "undefined") {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch (error) {
+                    console.error("Error parsing storedUser:", error);
+                }
             }
         }
-    }, [setUser]); // Runs only once when the component mounts
+    }, [setUser]);
+    
 
 
   const handleLogout = async () => {
@@ -49,7 +55,7 @@ const Header = () => {
                 {/* Navigation */}
                 <nav className="flex space-x-6">
                     
-                    {user.userId !== "" ? (
+                    {user !== undefined && user.userId !== "" ? (
                        <>
                         <h2  className="text-gray-700 hover:text-blue-500 transition-all">{user?.name}</h2>
                         <button 
