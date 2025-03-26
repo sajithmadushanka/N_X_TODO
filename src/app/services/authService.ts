@@ -1,8 +1,10 @@
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 // login api call
 
 export async function loginService(email:string, password:string){
 
-    const response = await fetch("http://localhost:3000/api/auth/signin", {
+    const response = await fetch(`${API_BASE_URL}/api/auth/signin`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -19,7 +21,7 @@ export async function loginService(email:string, password:string){
 // register api call
 export async function registerService(name:string, email:string, password:string){
   
-    const response = await fetch("http://localhost:3000/api/auth/signup", {
+    const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +37,7 @@ export async function registerService(name:string, email:string, password:string
 // logout
 export async function logoutService(){
     console.log('logout service -------------')
-    const res = await fetch("http://localhost:3000/api/auth/logout",
+    const res = await fetch(`${API_BASE_URL}/api/auth/logout`,
        {
         method:"GET",
         credentials: "include" });
